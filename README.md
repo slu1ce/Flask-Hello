@@ -9,7 +9,7 @@ Playing around with Flask
 4. In the virtual environment : `$ pip install Flask`
 
 ## Run
-`$. python main.py run`
+`$ python main.py run`
 
 ## Test
 http://localhost:5000/forms
