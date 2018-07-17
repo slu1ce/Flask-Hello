@@ -1,26 +1,22 @@
 from flask import Flask, request, redirect, render_template
-import cgi
-import os
-import jinja2
-
-template_dir = os.path.join(os.path.dirname(__file__), 'templates')
-jinja_env = jinja2.Environment(loader = jinja2.FileSystemLoader(template_dir), autoescape=True)
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
-
 @app.route("/")
 def index():
-    template = jinja_env.get_template('hello_form.html')
-    return template.render()
+    return render_template('hello_form.html')
+
+@app.route('/hello', methods=['POST'])
+def hello():
+    first_name = request.form['first_name']
+    # template = jinja_env.get_template('hello_greeting.html')
+    return render_template('hello_greeting.html', name=first_name)
 
 
 @app.route("/validate-time")  # GET by default
 def display_time_form():
-    template = jinja_env.get_template('time_form.html')
-    return template.render(hours='', hours_error='', 
-        minutes='', minutes_error='')
+    return render_template('time_form.html')
 
 
 def is_integer(num):
@@ -61,8 +57,7 @@ def validate_time():
         time = str(hours) + ':' +str(minutes)
         return redirect('/valid-time?time={}'.format(time))
     else:
-        template = jinja_env.get_template('time_form.html')
-        return template.render(hours_error=hours_error, 
+        return render_template('time_form.html', hours_error=hours_error, 
             minutes_error=minutes_error,
             hours=hours,
             minutes=minutes)
@@ -71,15 +66,7 @@ def validate_time():
 @app.route('/valid-time')
 def valid_time():
     time = request.args.get('time')
-    template = jinja_env.get_template('valid_time.html')
-    return template.render(time=time)
-
-
-@app.route('/hello', methods=['POST'])
-def hello():
-    first_name = request.form['first_name']
-    template = jinja_env.get_template('hello_greeting.html')
-    return template.render(name=first_name)
+    return render_template('valid_time.html', time=time)
 
 
 tasks = []
@@ -91,8 +78,7 @@ def todos():
         task = request.form['task']
         tasks.append(task)
 
-    template = jinja_env.get_template('todos.html')
-    return template.render(title='TODOs', tasks=tasks)
+    return render_template('todos.html', title='TODOs', tasks=tasks)
 
 
 app.run()
